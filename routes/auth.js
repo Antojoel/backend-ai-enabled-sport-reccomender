@@ -61,7 +61,6 @@ router.post('/signup', async (req, res) => {
 // Route for user signin
 router.post('/signin', async (req, res) => {
 
-  console.log(req)
   const { email, password, role } = req.body;
 
   if (!email || !password || !role) {

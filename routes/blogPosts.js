@@ -4,6 +4,22 @@ const router = express.Router();
 const BlogPost = require('../models/BlogPost');
 const { authenticateToken, isAdminOrStaff } = require('../middleware/auth');
 
+// Search blog posts (public)
+router.get('/search', async (req, res) => {
+    const { q } = req.query;
+    if (!q) {
+        return res.status(400).json({ message: 'Search query is required' });
+    }
+
+    try {
+        const posts = await BlogPost.searchPosts(q);
+        res.json(posts);
+    } catch (error) {
+        console.error('Error searching blog posts:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 // Get all blog posts (public)
 router.get('/', async (req, res) => {
     try {
@@ -25,22 +41,6 @@ router.get('/:id', async (req, res) => {
         res.json(post);
     } catch (error) {
         console.error('Error fetching blog post:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
-
-// Search blog posts (public)
-router.get('/search', async (req, res) => {
-    const { q } = req.query;
-    if (!q) {
-        return res.status(400).json({ message: 'Search query is required' });
-    }
-
-    try {
-        const posts = await BlogPost.searchPosts(q);
-        res.json(posts);
-    } catch (error) {
-        console.error('Error searching blog posts:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });
